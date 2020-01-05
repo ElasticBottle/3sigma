@@ -1,6 +1,7 @@
-from Line import TrendLine
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
+from Line import TrendLine
 
 # Load the stock data and calculate ema from the stock data
 stock_data = None
@@ -19,4 +20,3 @@ x = np.linspace(0, 10, 1000)
 ax.plot(x, m_upper * x + c_upper)
 ax.plot(x, m_lower * x + c_lower)
 plt.show()
-
