@@ -6,7 +6,7 @@ import pandas as pd
 class TrackTrade:
     def __init__(self, open_price, close_price=-1, num_bars_since_trade_entered=0):
         super().__init__()
-        print("Trade entered at:", open_price.values)
+        print("Trade entered at:", open_price.values[0])
         self.open_price = open_price
         self.close_price = close_price
         self.num_bars_since_trade_entered = num_bars_since_trade_entered
@@ -18,7 +18,7 @@ class TrackTrade:
         return self.num_bars_since_trade_entered
 
     def set_close_price(self, close_price):
-        self.close_price = close_price
+        self.close_price = close_price.values[0]
 
     def get_price_change(self):
         print(self.close_price)
@@ -132,7 +132,7 @@ class BullMomentum:
                 Bot exits the trade based of the closing price of the most recent observation
         """
         self.in_trade = False
-        self.trade.set_close_price(timeframe_df.iloc[-1:, :].at[self.CLOSE_PRICE])
+        self.trade.set_close_price(timeframe_df.iloc[-1:, :][self.CLOSE_PRICE])
         self.profit += self.trade.get_price_change() - self.COMMISSION
 
     def __num_redbars_in(self, timeframe_to_check, numBars):
