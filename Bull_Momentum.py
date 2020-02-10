@@ -4,8 +4,8 @@ import time
 
 class BullMomentum:
 
-    DURATION_OF_GREENBAR = 1
-    NUM_GREENBAR_TO_PASS = 0
+    NUM_GREENBAR_TO_CHECK = 1
+    NUM_GREENBAR_TO_QUALIFY_TRADE = 0
     in_trade = False
     num_bars_since_trade_entered = 0
 
@@ -13,7 +13,7 @@ class BullMomentum:
         pass
 
     def __enter_trade(self):
-        in_trade = True
+        self.in_trade = True
         price_entered = 0
         # TODO fill up price entered
         self.__track_trade()
@@ -37,18 +37,29 @@ class BullMomentum:
         return green_counter
 
     def __check_for_entry(self, timeframe_df, entry):
+        """
+        Checks to see if conditions for entry are favourable.
+        Done by looking at the past x bars in timeframe_df and looking for y green bars among them.
+
+        Args:
+            timeframe_df (pandas dataframe): Contains the data for the ticker to test on. 
+                Each row should be an observation in the timeline that the strat should be run on.
+            entry (tuple): first value contains the number of bars that has to be green. 
+                Second value contains the number of days to look for green bars in.
+                Second value should always be larger than or equal to the first value
+        """
         # if x amount of the last y bar is ‘green’, enter at market price
         if (
-            self.__num_greenbars_in(timeframe_df[-entry[self.DURATION_OF_GREENBAR]])
-            >= entry[self.NUM_GREENBAR_TO_PASS]
+            self.__num_greenbars_in(timeframe_df[-entry[self.NUM_GREENBAR_TO_CHECK]])
+            >= entry[self.NUM_GREENBAR_TO_QUALIFY_TRADE]
         ):
             return self.__enter_trade()
         else:
             return False
 
     def __exit_trade(self):
-        in_trade = True
-        price_entered = 0
+        self.in_trade = False
+        price_exit = 0
         # TODO track price entered
         self.__track_trade()
 
@@ -64,6 +75,21 @@ class BullMomentum:
         self.__check_stop_exit(exit_stop)
 
     def __decide_on_trade(self, timeframe_df, entry, exit_normal, exit_stop):
+        """
+        Decides whether to the bot should be looking to oenter or exit a trade.
+
+        Args:
+            timeframe_df (pandas dataframe): Contains the data for the ticker to test on. 
+                Each row should be an observation in the timeline that the strat should be run on.
+            entry (tuple): first value contains the number of bars that has to be green. 
+                Second value contains the number of days to look for green bars in.
+                Second value should always be larger than or equal to the first value
+            exit_normal (integer): Contains the number of days to automatically exit the trade.
+                Value must be larger than the second value of exit_stop.
+            exit_stop (tuple): first value contains the number of bars that has to be red. 
+                Second value contains the number of days to look for red bars in.
+                Second value should always be larger than or equal to first value
+        """
         if self.in_trade:
             self.__check_for_exit(
                 exit_normal, exit_stop, self.num_bars_since_trade_entered
