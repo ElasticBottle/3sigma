@@ -9,6 +9,9 @@ import api_keys as key
 
 
 class Finnhub:
+    """
+    Allows user to retrieve bitcoin data from finnhub.io
+    """
 
     values = {
         "1_minute": 0,
