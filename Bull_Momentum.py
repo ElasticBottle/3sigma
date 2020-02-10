@@ -33,6 +33,7 @@ class BullMomentum:
     CLOSE_PRICE = "closing"
     GREEN = "green"
     RED = "red"
+    COMMISSION = 15.01
 
     # Trackers to manage trading bot
     in_trade = False
@@ -52,6 +53,10 @@ class BullMomentum:
     def __num_greenbars_in(self, timeframe):
         """
         Counts the number of greenbars within x amount of days/minutes
+        
+        Args:
+            timeframe_df (pandas dataframe): Contains the data for the ticker to test on. 
+                Each row should be an observation in the timeline that the strat should be run on.
         """
         green_counter = 0
         for row in timeframe:
@@ -106,7 +111,7 @@ class BullMomentum:
 
     def __decide_on_trade(self, timeframe_df, entry, exit_normal, exit_stop):
         """
-        Decides whether to the bot should be looking to oenter or exit a trade.
+        Decides whether the bot should be looking to enter or exit a trade.
 
         Args:
             timeframe_df (pandas dataframe): Contains the data for the ticker to test on. 
