@@ -30,8 +30,8 @@ class BullMomentum:
     # Costants
     NUM_GREENBAR_TO_CHECK = 1
     NUM_GREENBAR_TO_QUALIFY_TRADE = 0
-    OPEN_PRICE = "opening"
-    CLOSE_PRICE = "closing"
+    OPEN_PRICE = "open"
+    CLOSE_PRICE = "close"
     GREEN = "green"
     RED = "red"
     COMMISSION = 15.01
@@ -39,6 +39,9 @@ class BullMomentum:
     # Trackers to manage trading bot
     in_trade = False
     profit = 0
+
+    def __init__(self):
+        super().__init__()
 
     def __enter_trade(self, timeframe_df):
         self.in_trade = True
@@ -79,7 +82,7 @@ class BullMomentum:
                 Second value should always be larger than or equal to the first value
         """
         # if x amount of the last y bar is ‘green’, enter at market price
-        print(timeframe_df[-entry[self.NUM_GREENBAR_TO_CHECK]])
+        print(timeframe_df.iloc[-entry[self.NUM_GREENBAR_TO_CHECK] + 1, :])
         if (
             self.__num_greenbars_in(timeframe_df[-entry[self.NUM_GREENBAR_TO_CHECK]])
             >= entry[self.NUM_GREENBAR_TO_QUALIFY_TRADE]
