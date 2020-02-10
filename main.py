@@ -9,48 +9,65 @@ from finnhub_api import Finnhub
 
 EXIT_NORMAL = 0
 EXIT_STOP = 1
+DATA_INFO = 0
+DATASET = 1
 
 
 def get_data():
     datas = list()
     data = Finnhub()
     datas.append(
-        data.get_data(
+        (
             "hourly",
-            datetime.datetime(2017, 11, 30, 23, 30, 00),
-            datetime.datetime(2019, 9, 30, 23, 30, 00),
+            data.get_data(
+                "hourly",
+                datetime.datetime(2017, 11, 30, 23, 30, 00),
+                datetime.datetime(2019, 9, 30, 23, 30, 00),
+            ),
         )
     )
 
     datas.append(
-        data.get_data(
+        (
             "30_minute",
-            datetime.datetime(2017, 11, 30, 23, 30, 00),
-            datetime.datetime(2019, 9, 30, 23, 30, 00),
+            data.get_data(
+                "30_minute",
+                datetime.datetime(2017, 11, 30, 23, 30, 00),
+                datetime.datetime(2019, 9, 30, 23, 30, 00),
+            ),
         )
     )
 
     datas.append(
-        data.get_data(
+        (
             "15_minute",
-            datetime.datetime(2017, 11, 30, 23, 30, 00),
-            datetime.datetime(2019, 9, 30, 23, 30, 00),
+            data.get_data(
+                "15_minute",
+                datetime.datetime(2017, 11, 30, 23, 30, 00),
+                datetime.datetime(2019, 9, 30, 23, 30, 00),
+            ),
         )
     )
 
     datas.append(
-        data.get_data(
+        (
             "5_minute",
-            datetime.datetime(2017, 11, 30, 23, 30, 00),
-            datetime.datetime(2018, 12, 31, 23, 30, 00),
+            data.get_data(
+                "5_minute",
+                datetime.datetime(2017, 11, 30, 23, 30, 00),
+                datetime.datetime(2018, 12, 31, 23, 30, 00),
+            ),
         )
     )
 
     datas.append(
-        data.get_data(
+        (
             "1_minute",
-            datetime.datetime(2017, 11, 30, 23, 30, 00),
-            datetime.datetime(2018, 12, 31, 23, 30, 00),
+            data.get_data(
+                "1_minute",
+                datetime.datetime(2017, 11, 30, 23, 30, 00),
+                datetime.datetime(2018, 12, 31, 23, 30, 00),
+            ),
         )
     )
     return datas
@@ -81,10 +98,10 @@ def generate_exit_signals(
 
 def test_datasets(datasets):
     for data in datasets:
-        test_data_with_various_entry_exit(data)
+        test_data_with_various_entry_exit(data[DATASET], data[DATA_INFO])
 
 
-def test_data_with_various_entry_exit(data):
+def test_data_with_various_entry_exit(data, data_info):
     bull_strat = BullMomentum()
     entry_timings = generate_entry_signals(3, 15, 2)
     # print(entry_timings)
@@ -93,7 +110,24 @@ def test_data_with_various_entry_exit(data):
     for entry in entry_timings:
         for exits in exit_timings:
             print(
-                bull_strat.simulateStrat(
+                "simulating trade on",
+                data_info,
+                "\nEntry when",
+                entry[0],
+                "green bar in the last",
+                entry[1],
+                "bars",
+                "\nExit normally after:",
+                exits[EXIT_NORMAL],
+                "bars",
+                "\nStop loss exit:",
+                exits[EXIT_STOP][0],
+                "red bars in the last",
+                exits[EXIT_STOP][1],
+                "bars",
+            )
+            print(
+                bull_strat.simulate_strat(
                     data, entry, exits[EXIT_NORMAL], exits[EXIT_STOP]
                 )
             )
