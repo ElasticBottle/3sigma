@@ -51,12 +51,6 @@ class Finnhub:
         """
         from_date = int(datetime.datetime.timestamp(from_date))
         to_date = int(datetime.datetime.timestamp(to_date))
-        print(
-            "from Date:",
-            datetime.datetime.utcfromtimestamp(from_date),
-            "to_date: ",
-            datetime.datetime.utcfromtimestamp(to_date),
-        )
         r = requests.get(
             "https://finnhub.io/api/v1/crypto/candle?symbol=BINANCE:BTCUSDT&resolution="
             + self.resolutions[self.values[resolution]]
@@ -68,6 +62,15 @@ class Finnhub:
             + key.finnhub_api
         ).json()
         if r["s"] == "ok":
+            # logging
+            print(
+                "Gotten data at",
+                resolution,
+                "/nfrom Date:",
+                datetime.datetime.utcfromtimestamp(from_date),
+                "to_date: ",
+                datetime.datetime.utcfromtimestamp(to_date),
+            )
             # removes the status and volume key
             del r["s"]
             del r["v"]
