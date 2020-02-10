@@ -7,7 +7,7 @@ class TrackTrade:
     def __init__(self, open_price, close_price=-1, num_bars_since_trade_entered=0):
         super().__init__()
         print("Trade entered at:", open_price.values[0])
-        self.open_price = open_price
+        self.open_price = open_price.values[0]
         self.close_price = close_price
         self.num_bars_since_trade_entered = num_bars_since_trade_entered
 
