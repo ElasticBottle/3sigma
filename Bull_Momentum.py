@@ -26,13 +26,15 @@ class TrackTrade:
 
 
 class BullMomentum:
-
+    # Costants
     NUM_GREENBAR_TO_CHECK = 1
     NUM_GREENBAR_TO_QUALIFY_TRADE = 0
     OPEN_PRICE = "opening"
     CLOSE_PRICE = "closing"
     GREEN = "green"
     RED = "red"
+
+    # Trackers to manage trading bot
     in_trade = False
     profit = 0
 
