@@ -2,28 +2,49 @@ import pandas as pd
 import time
 
 
+class TrackTrade:
+    def __init__(self, open_price, close_price=-1, num_bars_since_trade_entered=0):
+        super().__init__()
+        self.open_price = open_price
+        self.close_price = close_price
+        self.num_bars_since_trade_entered = num_bars_since_trade_entered
+
+    def increment_num_bars_since_trade_entered(self):
+        self.num_bars_since_trade_entered += 1
+
+    def get_num_bars_since_trade_entered(self):
+        return self.num_bars_since_trade_entered
+
+    def set_close_price(self, close_price):
+        self.close_price = close_price
+
+    def get_price_change(self):
+        if self.close_price != -1:
+            return self.close_price - self.open_price
+        else:
+            raise ValueError("Close price not set yet.")
+
+
 class BullMomentum:
 
     NUM_GREENBAR_TO_CHECK = 1
     NUM_GREENBAR_TO_QUALIFY_TRADE = 0
+    OPEN_PRICE = "opening"
+    CLOSE_PRICE = "closing"
+    GREEN = "green"
+    RED = "red"
     in_trade = False
-    num_bars_since_trade_entered = 0
 
-    def __track_trade(self):
-        pass
-
-    def __enter_trade(self):
+    def __enter_trade(self, timeframe_df):
         self.in_trade = True
-        price_entered = 0
-        # TODO fill up price entered
-        self.__track_trade()
+        self.trade = TrackTrade(timeframe_df.iloc[-1].loc[:, self.OPEN_PRICE])
 
     def __candlesticks(self, btc_usd):
         for _ in btc_usd:
-            if btc_usd["closing"] > btc_usd["opening"]:
-                return "green"
+            if btc_usd[self.CLOSE_PRICE] > btc_usd[self.OPEN_PRICE]:
+                return self.GREEN
             else:
-                return "red"
+                return self.RED
 
     def __num_greenbars_in(self, timeframe):
         """
@@ -32,7 +53,7 @@ class BullMomentum:
         green_counter = 0
         for row in timeframe:
             bar = self.__candlesticks(row)
-            if bar == "green":
+            if bar == self.GREEN:
                 green_counter += 1
         return green_counter
 
@@ -49,29 +70,35 @@ class BullMomentum:
                 Second value should always be larger than or equal to the first value
         """
         # if x amount of the last y bar is ‘green’, enter at market price
+        print(timeframe_df[-entry[self.NUM_GREENBAR_TO_CHECK]])
         if (
             self.__num_greenbars_in(timeframe_df[-entry[self.NUM_GREENBAR_TO_CHECK]])
             >= entry[self.NUM_GREENBAR_TO_QUALIFY_TRADE]
         ):
-            return self.__enter_trade()
+            return self.__enter_trade(timeframe_df)
         else:
             return False
 
-    def __exit_trade(self):
+    def __exit_trade(self, timeframe_df):
         self.in_trade = False
-        price_exit = 0
-        # TODO track price entered
-        self.__track_trade()
+        self.trade.set_close_price(timeframe_df.iloc[-1].loc[:, self.CLOSE_PRICE])
+        self.total_made = self.trade.get_price_change()
 
     def __check_stop_exit(self, exit_stop):
         pass
 
-    def __check_normal_exit(self, exit_normal, num_bars_since_trade_entered):
+    def __check_normal_exit(
+        self, timeframe_df, exit_normal, num_bars_since_trade_entered
+    ):
         if num_bars_since_trade_entered >= exit_normal:
-            self.__exit_trade()
+            self.__exit_trade(timeframe_df)
 
-    def __check_for_exit(self, exit_normal, exit_stop, num_bars_since_trade_entered):
-        self.__check_normal_exit(exit_normal, num_bars_since_trade_entered)
+    def __check_for_exit(
+        self, timeframe_df, exit_normal, exit_stop, num_bars_since_trade_entered
+    ):
+        self.__check_normal_exit(
+            timeframe_df, exit_normal, num_bars_since_trade_entered
+        )
         self.__check_stop_exit(exit_stop)
 
     def __decide_on_trade(self, timeframe_df, entry, exit_normal, exit_stop):
@@ -92,9 +119,12 @@ class BullMomentum:
         """
         if self.in_trade:
             self.__check_for_exit(
-                exit_normal, exit_stop, self.num_bars_since_trade_entered
+                timeframe_df,
+                exit_normal,
+                exit_stop,
+                self.trade.get_num_bars_since_trade_entered(),
             )
-            self.num_bars_since_trade_entered += 1
+            self.trade.increment_num_bars_since_trade_entered()
         else:
             self.__check_for_entry(timeframe_df, entry)
 
