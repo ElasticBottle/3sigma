@@ -66,7 +66,7 @@ class Finnhub:
             print(
                 "Gotten data at",
                 resolution,
-                "/nfrom Date:",
+                "resolution\nfrom Date:",
                 datetime.datetime.utcfromtimestamp(from_date),
                 "to_date: ",
                 datetime.datetime.utcfromtimestamp(to_date),
