@@ -56,17 +56,27 @@ def get_data():
     return datas
 
 
-def generate_entry_signals():
+def generate_entry_signals(min_num_to_check, max_num_to_check, min_green):
     entry_signals = []
-    for i in range(3, 16):
-        for j in range(2, i):
+    for i in range(min_num_to_check, max_num_to_check + 1):
+        for j in range(min_green, i):
             entry_signals.append((j, i))
     return entry_signals
 
 
-def generate_exit_signals():
-    # TODO: generate list of tuples and int for exit signal (normal and stop exit)
-    return []
+def generate_exit_signals(
+    min_exit_normal,
+    max_exit_normal,
+    min_exit_stop_to_check,
+    max_exit_stop_to_check,
+    min_red,
+):
+    exit_signals = []
+    for i in range(min_exit_normal, max_exit_normal + 1):
+        for j in range(min_exit_stop_to_check, min(max_exit_stop_to_check + 1, i + 1)):
+            for k in range(min_red, j):
+                exit_signals.append([i, (k, j)])
+    return exit_signals
 
 
 def test_datasets(datasets):
@@ -76,9 +86,10 @@ def test_datasets(datasets):
 
 def test_data_with_various_entry_exit(data):
     bull_strat = BullMomentum()
-    entry_timings = generate_entry_signals()
+    entry_timings = generate_entry_signals(3, 15, 2)
     print(entry_timings)
-    exit_timings = generate_exit_signals()
+    exit_timings = generate_exit_signals(5, 20, 3, 15, 2)
+    print(exit_timings)
     for entry in entry_timings:
         for exits in exit_timings:
             print(
