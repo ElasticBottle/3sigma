@@ -2,6 +2,7 @@ import datetime
 import json
 import time
 
+import pandas as pd
 import requests
 
 import api_keys as key
@@ -40,17 +41,26 @@ class Finnhub:
                 Remember to import datetime in the file you're using first
             to_date(datetime): Provides the end of the timeline to get data for.
                 Format same as from_date.
+        
+        Notes:
+            from_date and to_date are 8 hours ahead due to the timezone difference between SG and GMT +0 I believe
+
         """
-        from_date = str(int(datetime.datetime.timestamp(from_date)))
-        to_date = str(int(datetime.datetime.timestamp(to_date)))
-        print("from Date:", from_date, "to_date: ", to_date)
+        from_date = int(datetime.datetime.timestamp(from_date))
+        to_date = int(datetime.datetime.timestamp(to_date))
+        print(
+            "from Date:",
+            datetime.datetime.utcfromtimestamp(from_date),
+            "to_date: ",
+            datetime.datetime.utcfromtimestamp(to_date),
+        )
         r = requests.get(
             "https://finnhub.io/api/v1/crypto/candle?symbol=BINANCE:BTCUSDT&resolution="
             + self.resolutions[self.values[resolution]]
             + "&from="
-            + from_date
+            + str(from_date)
             + "&to="
-            + to_date
+            + str(to_date)
             + "&token="
             + key.finnhub_api
         ).json()
@@ -58,7 +68,13 @@ class Finnhub:
             # removes the status and volume key
             del r["s"]
             del r["v"]
-            return r
+            df = pd.DataFrame(r)
+            df.columns = ["close", "high", "low", "open", "time"]
+            df[["time"]] = df[["time"]].apply(
+                lambda x: datetime.datetime.utcfromtimestamp(x), axis=1
+            )
+            df.set_index("time", inplace=True)
+            return df
         else:
             print(json.dumps(r.json(), indent=4))
             raise ValueError("problem fetching data")
