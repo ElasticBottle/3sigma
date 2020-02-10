@@ -34,6 +34,7 @@ class BullMomentum:
     GREEN = "green"
     RED = "red"
     in_trade = False
+    profit = 0
 
     def __enter_trade(self, timeframe_df):
         self.in_trade = True
@@ -82,7 +83,7 @@ class BullMomentum:
     def __exit_trade(self, timeframe_df):
         self.in_trade = False
         self.trade.set_close_price(timeframe_df.iloc[-1].loc[:, self.CLOSE_PRICE])
-        self.total_made = self.trade.get_price_change()
+        self.profit += self.trade.get_price_change()
 
     def __check_stop_exit(self, exit_stop):
         pass
@@ -151,3 +152,4 @@ class BullMomentum:
                 timeframe_df.loc[:i, :], entry, exit_normal, exit_stop
             )
             time.sleep(1)
+        return self.profit
