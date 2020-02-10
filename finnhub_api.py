@@ -53,5 +53,12 @@ class Finnhub:
             + to_date
             + "&token="
             + key.finnhub_api
-        )
-        print(r.json())
+        ).json()
+        if r["s"] == "ok":
+            # removes the status and volume key
+            del r["s"]
+            del r["v"]
+            return r
+        else:
+            print(json.dumps(r.json(), indent=4))
+            raise ValueError("problem fetching data")
