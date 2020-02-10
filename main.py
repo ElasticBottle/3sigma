@@ -17,53 +17,51 @@ def get_data():
     datas.append(
         data.get_data(
             "hourly",
-            datetime.datetime(2017, 11, 31, 23, 30, 00),
-            datetime.datetime(2019, 9, 31, 23, 30, 00),
+            datetime.datetime(2017, 11, 30, 23, 30, 00),
+            datetime.datetime(2019, 9, 30, 23, 30, 00),
         )
     )
 
     datas.append(
-        data_30_minute=data.get_data(
+        data.get_data(
             "30_minute",
-            datetime.datetime(2017, 11, 31, 23, 30, 00),
-            datetime.datetime(2019, 9, 31, 23, 30, 00),
+            datetime.datetime(2017, 11, 30, 23, 30, 00),
+            datetime.datetime(2019, 9, 30, 23, 30, 00),
         )
     )
 
     datas.append(
-        data_15_minute=data.get_data(
+        data.get_data(
             "15_minute",
-            datetime.datetime(2017, 11, 31, 23, 30, 00),
-            datetime.datetime(2019, 9, 31, 23, 30, 00),
+            datetime.datetime(2017, 11, 30, 23, 30, 00),
+            datetime.datetime(2019, 9, 30, 23, 30, 00),
         )
     )
 
     datas.append(
-        data_5_minute=data.get_data(
+        data.get_data(
             "5_minute",
-            datetime.datetime(2017, 11, 31, 23, 30, 00),
+            datetime.datetime(2017, 11, 30, 23, 30, 00),
             datetime.datetime(2018, 12, 31, 23, 30, 00),
         )
     )
 
     datas.append(
-        data_1_minute=data.get_data(
+        data.get_data(
             "1_minute",
-            datetime.datetime(2017, 11, 31, 23, 30, 00),
+            datetime.datetime(2017, 11, 30, 23, 30, 00),
             datetime.datetime(2018, 12, 31, 23, 30, 00),
         )
     )
     return datas
 
 
-def test_datasets(datasets):
-    for data in datasets:
-        test_data_with_various_entry_exit(data)
-
-
 def generate_entry_signals():
-    # TODO: generate list of tuples for entry signals
-    return []
+    entry_signals = []
+    for i in range(3, 16):
+        for j in range(2, i):
+            entry_signals.append((j, i))
+    return entry_signals
 
 
 def generate_exit_signals():
@@ -71,9 +69,15 @@ def generate_exit_signals():
     return []
 
 
+def test_datasets(datasets):
+    for data in datasets:
+        test_data_with_various_entry_exit(data)
+
+
 def test_data_with_various_entry_exit(data):
     bull_strat = BullMomentum()
     entry_timings = generate_entry_signals()
+    print(entry_timings)
     exit_timings = generate_exit_signals()
     for entry in entry_timings:
         for exits in exit_timings:
