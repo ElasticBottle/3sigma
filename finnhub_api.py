@@ -1,7 +1,10 @@
-import requests
-import api_keys as key
 import datetime
+import json
 import time
+
+import requests
+
+import api_keys as key
 
 
 class Finnhub:
@@ -52,4 +55,3 @@ class Finnhub:
             + key.finnhub_api
         )
         print(r.json())
-

@@ -1,5 +1,6 @@
-import pandas as pd
 import time
+
+import pandas as pd
 
 
 class TrackTrade:
@@ -53,7 +54,7 @@ class BullMomentum:
     def __num_greenbars_in(self, timeframe):
         """
         Counts the number of greenbars within x amount of days/minutes
-        
+
         Args:
             timeframe_df (pandas dataframe): Contains the data for the ticker to test on. 
                 Each row should be an observation in the timeline that the strat should be run on.
