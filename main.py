@@ -87,9 +87,9 @@ def test_datasets(datasets):
 def test_data_with_various_entry_exit(data):
     bull_strat = BullMomentum()
     entry_timings = generate_entry_signals(3, 15, 2)
-    print(entry_timings)
+    # print(entry_timings)
     exit_timings = generate_exit_signals(5, 20, 3, 15, 2)
-    print(exit_timings)
+    # print(exit_timings)
     for entry in entry_timings:
         for exits in exit_timings:
             print(
