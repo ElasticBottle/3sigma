@@ -12,7 +12,8 @@ matplotlib = "*"
 yfinance = "*"
 trendln = "*"
 scikit-image = "*"
-mplfinance = "*"
+pandas-datareader = "*"
+plotly = "==4.9.0"
 
 [requires]
 python_version = "3.8"
