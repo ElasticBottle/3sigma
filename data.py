@@ -41,28 +41,31 @@ class Data:
 
     # ! TODO(EB): Add way to control resolution of data, currently only 1 hour
     # ! TODO(EB): Add way to store multiple tick data.
-    def __init__(
+    def __init__(self):
+        # fetch data by interval (including intraday if period < 60 days)
+        # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
+        super(Data).__init__()
+
+    def get_stock_data(
         self,
         ticker: Union[str, list],
         start: datetime,
         end: datetime,
-        interval: Interval = Interval.ONE_D,
+        interval: YfInterval = YfInterval.ONE_D,
     ):
-        # fetch data by interval (including intraday if period < 60 days)
-        # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
-        super().__init__()
         yf.pdr_override()
         end += datetime.timedelta(days=2)
+        assert end > start
         if (
-            interval == Interval.ONE_M
-            or interval == Interval.TWO_M
-            or interval == Interval.FIVE_M
-            or interval == Interval.FIFTEEN_M
-            or interval == Interval.THIRTY_M
-            or interval == Interval.SIXTY_M
-            or interval == Interval.NINETY_M
-            or interval == Interval.ONE_H
-        ):
+            interval == YfInterval.ONE_M
+            or interval == YfInterval.TWO_M
+            or interval == YfInterval.FIVE_M
+            or interval == YfInterval.FIFTEEN_M
+            or interval == YfInterval.THIRTY_M
+            or interval == YfInterval.SIXTY_M
+            or interval == YfInterval.NINETY_M
+            or interval == YfInterval.ONE_H
+        ) and end - start > datetime.timedelta(days=60):
             start = end - datetime.timedelta(days=60)
         tickers = " ".join(make_list(ticker))
         self.data_df = yf.download(tickers, start, end, interval=interval.value,)
@@ -169,13 +172,14 @@ class Data:
 
 
 #%%
-aapl = Data(
-    ["lrn"],
-    start=datetime.datetime(2018, 1, 1),
-    end=datetime.datetime(2019, 12, 18),
-    interval=Interval.THIRTY_M,
+aapl = Data()
+aapl.get_stock_data(
+    ["aapl"],
+    start=datetime.datetime(2019, 8, 12),
+    end=datetime.datetime(2019, 8, 14),
+    interval=YfInterval.ONE_H,
 )
 aapl.data_stats()
 
-
+aapl.data_df
 # aapl.show()

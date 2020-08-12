@@ -19,7 +19,7 @@ def get_data():
     datas.append(
         (
             "hourly",
-            data.get_data(
+            data.get_crypto_data(
                 "hourly",
                 datetime.datetime(2017, 11, 30, 23, 30, 00),
                 datetime.datetime(2019, 9, 30, 23, 30, 00),
@@ -30,7 +30,7 @@ def get_data():
     datas.append(
         (
             "30_minute",
-            data.get_data(
+            data.get_crypto_data(
                 "30_minute",
                 datetime.datetime(2017, 11, 30, 23, 30, 00),
                 datetime.datetime(2019, 9, 30, 23, 30, 00),
@@ -41,7 +41,7 @@ def get_data():
     datas.append(
         (
             "15_minute",
-            data.get_data(
+            data.get_crypto_data(
                 "15_minute",
                 datetime.datetime(2017, 11, 30, 23, 30, 00),
                 datetime.datetime(2019, 9, 30, 23, 30, 00),
@@ -52,7 +52,7 @@ def get_data():
     datas.append(
         (
             "5_minute",
-            data.get_data(
+            data.get_crypto_data(
                 "5_minute",
                 datetime.datetime(2017, 11, 30, 23, 30, 00),
                 datetime.datetime(2018, 12, 31, 23, 30, 00),
@@ -63,7 +63,7 @@ def get_data():
     datas.append(
         (
             "1_minute",
-            data.get_data(
+            data.get_crypto_data(
                 "1_minute",
                 datetime.datetime(2017, 11, 30, 23, 30, 00),
                 datetime.datetime(2018, 12, 31, 23, 30, 00),
