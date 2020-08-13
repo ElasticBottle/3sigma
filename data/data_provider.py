@@ -11,7 +11,7 @@ import requests
 from api_keys import finnhub_api
 
 
-class FinnHubInterval(Enum):
+class FinnhubInterval(Enum):
     ONE_M = "1"
     FIVE_M = "5"
     FIFTEEN_M = "15"
@@ -24,7 +24,7 @@ class FinnHubInterval(Enum):
 
 class Finnhub:
     """
-    Allows user to retrieve bitcoin data from finnhub.io
+    Allows user to retrieve financial data from finnhub.io
     """
 
     def __init__(self, api_key):
@@ -50,19 +50,19 @@ class Finnhub:
         return data
 
     def _is_valid_time(
-        self, res: FinnHubInterval, start: datetime, end: datetime
+        self, res: FinnhubInterval, start: datetime, end: datetime
     ) -> bool:
         if (
-            res == FinnHubInterval.ONE_M
-            or res == FinnHubInterval.FIVE_M
-            or res == FinnHubInterval.THIRTY_M
+            res == FinnhubInterval.ONE_M
+            or res == FinnhubInterval.FIVE_M
+            or res == FinnhubInterval.THIRTY_M
         ):
             pass
 
     def get_stock_data(
         self,
         ticker: str,
-        resolution: FinnHubInterval,
+        resolution: FinnhubInterval,
         start: datetime,
         end: datetime = datetime.datetime.now(),
         delta: int = 12,
@@ -118,13 +118,13 @@ class Finnhub:
             print(json.dumps(r, indent=4))
             raise ValueError(f"Problem fetching {resolution.value} data for {ticker} ")
 
-    def get_cache(self, ticker: str, resolution: FinnHubInterval) -> pd.DataFrame:
+    def get_cache(self, ticker: str, resolution: FinnhubInterval) -> pd.DataFrame:
         """
         Retrieves previously stored copy of data
 
         Args:
             - ticker(str): the symbol of the stock
-            -resolution(FinnHubInterval): the interval period interested in
+            -resolution(FinnhubInterval): the interval period interested in
 
         Returns:
             - pd.DataFrame: result of the retrieved data
@@ -192,14 +192,3 @@ class Finnhub:
             print(json.dumps(r.json(), indent=4))
             raise ValueError("problem fetching data")
 
-
-#%%
-data = Finnhub(finnhub_api)
-data.get_stock_data(
-    ticker="aapl",
-    resolution=FinnHubInterval.H,
-    start=datetime.datetime(2018, 8, 12),
-    end=datetime.datetime(2019, 8, 20, 10, 0, 0),
-)
-#%%
-data.get_cache("aapl", FinnHubInterval.H)
