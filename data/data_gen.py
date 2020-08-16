@@ -97,6 +97,7 @@ class StocksDataGen:
         lookback: datetime.timedelta,
         lookforward: datetime.timedelta,
         labeller: Callable[[pd.DataFrame], Union[str, None]] = default_labeller,
+        verbose: bool = False,
     ) -> pd.DataFrame:
         """
         Generates a labels for data base on a sliding window.
@@ -121,8 +122,8 @@ class StocksDataGen:
             current_data = self.data.loc[start_date:date, :]
             current_label = labeller(self.data, start_date, date, latest, lookforward)
 
-            if latest - date < 2 * lookforward:
-                print(date, latest, current_label)
+            if (latest - date < 2 * lookforward) and verbose:
+                print(date - lookback, date, current_label)
 
             if current_label is None:
                 break
