@@ -1,9 +1,12 @@
-from torch.utils.data import Dataset, DataLoader, SequentialSampler, RandomSampler
-import torch
+# Much of these code is from https://course.fast.ai/
+# Re-typed most of the code as an exercise to better understand the workings
+# I claim no credit for any of this
 from typing import Tuple
 
+import torch
 
-class PictureDataset(Dataset):
+
+class PictureDataset(torch.utils.data.Dataset):
     def __init__(self, x, y):
         super().__init__()
         assert len(x) == len(y)
@@ -32,28 +35,20 @@ class Sampler:
             yield self.idxs[i : i + self.bs]
 
 
-def accuracy(out, yb):
-    return (torch.argmax(out, dim=1) == yb).float().mean()
+class DataBunch:
+    def __init__(
+        self,
+        train_dl: torch.utils.data.DataLoader,
+        valid_dl: torch.utils.data.DataLoader,
+        c: int = None,
+    ):
+        self.train_dl, self.valid_dl, self.c = train_dl, valid_dl, c
 
+    @property
+    def train_ds(self):
+        return self.train_dl.dataset
 
-def fit(epochs, model, loss_func, opt, train_dl, valid_dl):
-    for epoch in range(epochs):
-        # Handle batchnorm / dropout
-        model.train()
-        for xb, yb in train_dl:
-            loss = loss_func(model(xb), yb)
-            loss.backward()
-            opt.step()
-            opt.zero_grad()
-
-        model.eval()
-        with torch.no_grad():
-            tot_loss, tot_acc = 0.0, 0.0
-            for xb, yb in valid_dl:
-                pred = model(xb)
-                tot_loss += loss_func(pred, yb)
-                tot_acc += accuracy(pred, yb)
-        nv = len(valid_dl)
-        print(epoch, tot_loss / nv, tot_acc / nv)
-    return tot_loss / nv, tot_acc / nv
+    @property
+    def valid_ds(self):
+        return self.valid_dl.dataset
 

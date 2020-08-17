@@ -108,7 +108,7 @@ def generate_data_files(tickers: List[str], train: bool = True):
             f"""Distribution of labels: 
 {label_distribution(generator.labels.loc[:, 'label'])}"""
         )
-    # save_1d_data(data_files, train=train)
+    save_1d_data(data_files, train=train)
 
 
 def generate_1d(train: List[str], valid: List[str]):
