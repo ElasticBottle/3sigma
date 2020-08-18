@@ -30,9 +30,9 @@ class Sampler:
         self.n, self.bs, self.shuffle = len(ds), bs, shuffle
 
     def __iter__(self):
-        self.idxs = torch.randperm(self.n) if self.shuffle else torch.arange(self.n)
+        self.indices = torch.randperm(self.n) if self.shuffle else torch.arange(self.n)
         for i in range(0, self.n, self.bs):
-            yield self.idxs[i : i + self.bs]
+            yield self.indices[i : i + self.bs]
 
 
 class DataBunch:
