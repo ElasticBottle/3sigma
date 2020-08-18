@@ -17,6 +17,7 @@ jupyter = "*"
 notebook = "*"
 jupyter-contrib-nbextensions = "*"
 tqdm = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.8"
