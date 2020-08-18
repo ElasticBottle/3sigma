@@ -111,12 +111,20 @@ class Finnhub:
             + "&token="
             + self.key
         )
-        r = json.loads(r.content)
+        try:
+            r = json.loads(r.content)
+        except:
+            raise json.JSONDecodeError("r.content")
+
         if r["s"] == "ok":
-            self.data[ticker.upper() + str(resolution.value)] = self._to_dateFrame(r)
+            self.data[ticker.upper() + str(resolution.value)] = self._to_dateFrame(
+                r
+            )
         else:
             print(json.dumps(r, indent=4))
-            raise ValueError(f"Problem fetching {resolution.value} data for {ticker} ")
+            raise ValueError(
+                f"Problem fetching {resolution.value} data for {ticker} "
+            )
 
     def get_cache(self, ticker: str, resolution: FinnhubInterval) -> pd.DataFrame:
         """
