@@ -6,13 +6,13 @@ from typing import Tuple
 import torch
 
 
-class PictureDataset(torch.utils.data.Dataset):
+class BasicDataset(torch.utils.data.Dataset):
     def __init__(self, x, y):
         super().__init__()
         assert len(x) == len(y)
         self.x, self.y = x, y
 
-    def __getitem__(self, i: int) -> Tuple:
+    def __getitem__(self, i) -> Tuple:
         return (self.x[i], self.y[i])
 
     def __len__(self) -> int:
@@ -45,6 +45,14 @@ class DataBunch:
         self.train_dl, self.valid_dl, self.c = train_dl, valid_dl, c
 
     @property
+    def train_dl(self):
+        return self.__train_dl
+
+    @train_dl.setter
+    def train_dl(self, value):
+        self.__train_dl = value
+
+    @property
     def train_ds(self):
         return self.train_dl.dataset
 
@@ -52,3 +60,10 @@ class DataBunch:
     def valid_ds(self):
         return self.valid_dl.dataset
 
+    @property
+    def valid_dl(self):
+        return self.__valid_dl
+
+    @valid_dl.setter
+    def valid_dl(self, value):
+        self.__valid_dl = value

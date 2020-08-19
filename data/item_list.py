@@ -1,32 +1,27 @@
 #%%
+import collections
 import os
 import sys
-import time
+
+# sys.path.append("c:\\Users\\winst\\Documents\\MEGA\\personal projects\\3sigma")
+
 from pathlib import Path
-from typing import Any, Callable, List, Tuple, Union, Set
+from typing import Any, Callable, List, Set, Union
 
-import pandas as pd
 import numpy as np
-import PIL
 
-sys.path.append("c:\\Users\\winst\\Documents\\MEGA\\personal projects\\3sigma")
-from extension_types import Extension, TextExtension
-from file_opener import CSVOpener
-from utils import make_list, make_path
+from data.extension_types import Extension, TextExtension
+from data.file_opener import CSVOpener, FileOpener
+from utils import make_path
 
 
 #%%
-
-
-class ItemList(List):
+class ItemList(collections.UserList):
     def __init__(
-        self,
-        extension: Extension,
-        file_opener: Callable[[Path], Any],
-        files: List[Path] = [],
+        self, extension: Extension, file_opener: FileOpener, files: List[Path] = [],
     ):
         super().__init__(files)
-        self.file_paths = files
+        self.file_paths = np.array(files)
         self.extension_cls = extension
         self.extension = extension()
         self.open = file_opener
@@ -65,8 +60,8 @@ class ItemList(List):
 
             self.file_paths = file_paths
         else:
-            files = [item.name for item in os.scandir(self.path) if item.is_file()]
-            self.file_paths = self._get_files(self.path, files, self.extension)
+            files = [item.name for item in os.scandir(path) if item.is_file()]
+            self.file_paths = self._get_files(path, files, self.extension)
         super().__init__(self.file_paths)
 
     # def compose(self, x, functions: List[Callable], order_key="_order"):
@@ -76,9 +71,8 @@ class ItemList(List):
     #     return x
 
     def __getitem__(self, idx):
-        res = super().__getitem__(idx)
-        print(res)
-        if isinstance(res, list):
+        res = self.file_paths[idx]
+        if isinstance(res, np.ndarray):
             return [self.open(o) for o in res]
         return self.open(res)
 
@@ -87,24 +81,25 @@ class ItemList(List):
             yield self[i]
 
     def __repr__(self):
-        return f"""ItemList {len(self)} items:
+        return f"""{self.__class__.__name__} {len(self)} items:
 {self.file_paths[:3]} {'...' if len(self) > 3 else ''}"""
 
 
+#%%
+import time
 
-# start = time.time()
-# path = Path(r"D:\Datasets\stock_data\1d")
+start = time.time()
+path = Path(r"D:\Datasets\stock_data\1d")
 
-# items = ItemList(TextExtension(), file_opener=CSVOpener(dtype=None, index_col=0))
-# items.get_files(path / "train", recurse=True)
+items = ItemList(TextExtension(), file_opener=CSVOpener(dtype=None, index_col=0))
+items.get_files(path / "train", recurse=True)
 # length = []
 # for i in range(len(items)):
 #     try:
 #         length.append(len(items[i]))
 #     except:
 #         length.append(float("inf"))
-# # print(min(length))
-
-# end = time.time()
-# print(f"{end - start: .2f}")
-
+# print(min(length))
+print(len(items))
+end = time.time()
+print(f"{end - start: .2f}")

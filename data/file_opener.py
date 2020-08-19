@@ -4,6 +4,7 @@ from typing import Callable, Dict, List, Union
 import pandas as pd
 import PIL
 
+from data.transforms import Transforms
 from utils import make_list
 
 
@@ -14,7 +15,7 @@ class FileOpener:
     """
 
     def __init__(
-        self, transforms: List[Callable[[pd.DataFrame], pd.DataFrame]] = [], **kwargs,
+        self, transforms=[], **kwargs,
     ):
         super().__init__()
         self.transforms = transforms
@@ -33,13 +34,7 @@ class FileOpener:
 
 class CSVOpener(FileOpener):
     def __init__(
-        self,
-        transforms: Union[
-            Callable[[pd.DataFrame], pd.DataFrame],
-            List[Callable[[pd.DataFrame], pd.DataFrame]],
-        ] = [],
-        dtype: Dict = None,
-        **kwargs,
+        self, transforms=[], dtype: Dict = None, **kwargs,
     ):
         transforms = make_list(transforms)
         super().__init__(transforms, dtype=dtype, **kwargs)
@@ -50,12 +45,7 @@ class CSVOpener(FileOpener):
 
 class ImgOpener(FileOpener):
     def __init__(
-        self,
-        transforms: Union[
-            Callable[[pd.DataFrame], pd.DataFrame],
-            List[Callable[[pd.DataFrame], pd.DataFrame]],
-        ] = [],
-        **kwargs,
+        self, transforms=[], **kwargs,
     ):
         transforms = make_list(transforms)
         super().__init__(transforms, **kwargs)
