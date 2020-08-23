@@ -38,16 +38,16 @@ class LabelByParentFolder(Labeller):
         self, train: ItemList, valid: ItemList, test: ItemList
     ) -> Tuple[List, List, List]:
         train_label = self.label_train(train)
-        en_train_label = self.encoder(train_label, is_valid_test=False)
-        train_ll = LabelList(train_label, en_train_label)
+        en_train_label, mappings = self.encoder(train_label, is_valid_test=False)
+        train_ll = LabelList(train_label, en_train_label, encoding=mappings)
 
         valid_label = self.label_valid(valid)
-        en_valid_label = self.encoder(valid_label)
-        valid_ll = LabelList(valid_label, en_valid_label)
+        en_valid_label, _ = self.encoder(valid_label)
+        valid_ll = LabelList(valid_label, en_valid_label, encoding=mappings)
 
         test_label = self.label_test(test)
-        en_test_label = self.encoder(test_label)
-        test_ll = LabelList(test_label, en_test_label)
+        en_test_label, _ = self.encoder(test_label)
+        test_ll = LabelList(test_label, en_test_label, encoding=mappings)
 
         return (train_ll, valid_ll, test_ll)
 

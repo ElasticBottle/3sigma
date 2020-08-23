@@ -31,7 +31,7 @@ class OrdinalEncoder(Encoder):
         self.encoded_labels = []
         for label in labels:
             self.encoded_labels.append(self.mapping[label])
-        return self.encoded_labels
+        return self.encoded_labels, self.mapping
 
 
 class OneHotEncoder(Encoder):
