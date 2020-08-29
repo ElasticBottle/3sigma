@@ -2,18 +2,15 @@
 # Re-typed most of the code as an exercise to better understand the workings
 # I claim no credit for any of this
 
-from typing import List, Union, Callable
+from typing import Callable, List, Union
 
 import torch
 
+import callbacks as C
+from callbacks import Callback, Cb
 from data import DataBunch
 from training.cancellation import *
-from training.callbacks import *
 from utils import camel_to_snake, make_list
-
-
-def accuracy(out, yb):
-    return (torch.argmax(out, dim=1) == yb).float().mean()
 
 
 class Learner:
@@ -45,7 +42,7 @@ class Learner:
         self.training, self.logger, self.opt = False, print, None
 
         self.cbs = []
-        self.add_cbs(make_list(callbacks) + [TrainEvalCallback()])
+        self.add_cbs(make_list(callbacks) + C.default_callbacks)
 
     def add_cbs(self, cbs: Union[Callback, List[Callback]]):
         for cb in make_list(cbs):
@@ -138,4 +135,3 @@ class Learner:
         assert callback_stage in Cb
         for cb in sorted(self.cbs, key=lambda x: x._order):
             cb(callback_stage.value)
-
