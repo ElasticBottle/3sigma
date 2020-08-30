@@ -1,8 +1,18 @@
+#%%
 import math
 from typing import Tuple, Union
 
 import numpy as np
 from torch import nn
+
+
+def init_layers(model: nn.Module):
+    if getattr(model, "bias", None) is not None:
+        nn.init.constant_(model.bias, 0)
+    if isinstance(model, (nn.Conv2d, nn.Conv1d, nn.Linear)):
+        nn.init.kaiming_normal_(model.weight)
+    for layer in model.children():
+        init_layers(layer)
 
 
 class Base1d(nn.Module):
@@ -31,6 +41,7 @@ class Base1d(nn.Module):
                 in_features=init_out_channel * pow(2, 5), out_features=4, bias=True,
             ),
         )
+        init_layers(self.model)
 
     def _nearest_pow2(self, num: int):
         return pow(2, math.floor(np.log2(num)))
@@ -39,7 +50,7 @@ class Base1d(nn.Module):
         return self.model(x_batch)
 
 
-class ConvLayer(nn.Module):
+class ConvLayer(nn.Sequential):
     def __init__(
         self,
         in_channels: int,
@@ -52,10 +63,9 @@ class ConvLayer(nn.Module):
         padding_mode: str = "zeros",
         bias: bool = True,
     ):
-        super().__init__()
         if padding is None:
             padding = kernel_size // 2
-        self.conv = nn.Sequential(
+        super().__init__(
             nn.Conv1d(
                 in_channels=in_channels,
                 out_channels=out_channels,
@@ -72,8 +82,4 @@ class ConvLayer(nn.Module):
         )
 
     def forward(self, x_batch):
-        return self.conv(x_batch)
-
-    def __repr__(self):
-        return f"{self.conv}"
-
+        return super().forward(x_batch)
