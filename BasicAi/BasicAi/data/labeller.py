@@ -1,7 +1,7 @@
 from typing import Tuple, List
-from data.item_list import ItemList
-from data.label_list import LabelList
-from data.encoder import Encoder
+from BasicAi.BasicAi.data.item_list import ItemList
+from BasicAi.BasicAi.data.label_list import LabelList
+from BasicAi.BasicAi.data.encoder import Encoder
 
 
 class Labeller:

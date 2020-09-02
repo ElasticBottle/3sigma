@@ -5,8 +5,7 @@ import torch
 import re
 from enum import Enum
 from functools import partial
-from training.cancellation import *
-from utils import camel_to_snake, make_list
+from BasicAi.BasicAi.utils import camel_to_snake, make_list
 
 
 class Cb(Enum):
@@ -66,6 +65,10 @@ class Callback:
     def name(self):
         name = re.sub(r"Callback$", "", self.__class__.__name__)
         return camel_to_snake(name or "callback")
+
+    @property
+    def learner(self):
+        return self.learner
 
     def __call__(self, cb_name):
         f = getattr(self, cb_name, None)

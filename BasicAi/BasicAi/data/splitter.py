@@ -1,7 +1,7 @@
 from typing import Tuple
-from data.item_list import ItemList
-from data.extension_types import TextExtension
-from data.file_opener import CSVOpener
+from BasicAi.BasicAi.data.item_list import ItemList
+from BasicAi.BasicAi.data.extension_types import TextExtension
+from BasicAi.BasicAi.data.file_opener import CSVOpener
 from pathlib import Path
 
 

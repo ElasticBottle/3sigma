@@ -1,18 +1,15 @@
 #%%
 import collections
 import os
-import sys
-
-# sys.path.append("c:\\Users\\winst\\Documents\\MEGA\\personal projects\\3sigma")
 
 from pathlib import Path
 from typing import Any, Callable, List, Set, Union
 
 import numpy as np
 
-from data.extension_types import Extension, TextExtension
-from data.file_opener import CSVOpener, FileOpener
-from utils import make_path
+from BasicAi.BasicAi.data.extension_types import Extension, TextExtension
+from BasicAi.BasicAi.data.file_opener import CSVOpener, FileOpener
+from BasicAi.BasicAi.utils import make_path
 
 
 #%%

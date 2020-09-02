@@ -3,9 +3,12 @@ from typing import Callable, Dict, List, Union
 
 import pandas as pd
 import PIL
+import os
 
-from data.transforms import Transforms
-from utils import make_list
+print(os.path)
+
+from BasicAi.BasicAi.data.transforms import Transforms
+from BasicAi.BasicAi.utils import make_list
 
 
 class FileOpener:

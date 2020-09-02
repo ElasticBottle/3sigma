@@ -6,11 +6,11 @@ from typing import Callable, List, Union
 
 import torch
 
-import callbacks as C
-from callbacks import Callback, Cb
-from data import DataBunch
-from training.cancellation import *
-from utils import camel_to_snake, make_list
+import BasicAi.BasicAi.callbacks as C
+from BasicAi.BasicAi.callbacks import Callback, Cb
+from BasicAi.BasicAi.data import DataBunch
+from BasicAi.BasicAi.training.cancellation import *
+from BasicAi.BasicAi.utils import camel_to_snake, make_list
 
 
 class Learner:
@@ -93,12 +93,14 @@ class Learner:
 
     def _train(self):
         self.training, self.loss = True, torch.zeros(1)
+        self.model.train()
         self(Cb.BEGIN_TRAINING)
         self._all_batches(self.data.train_dl)
         self(Cb.AFTER_TRAINING)
 
     def _validate(self):
         self.training = False
+        self.model.eval()
         with torch.no_grad():
             self(Cb.BEGIN_VALIDATE)
             self._all_batches(self.data.valid_dl)
