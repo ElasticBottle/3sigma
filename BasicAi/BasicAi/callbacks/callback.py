@@ -9,32 +9,34 @@ from BasicAi.BasicAi.utils import camel_to_snake, make_list
 
 
 class Cb(Enum):
-    BEGIN_FIT = ("begin_fit",)
-    AFTER_FIT = ("after_fit",)
-    AFTER_CANCEL_FIT = ("after_cancel_fit",)
-    BEGIN_EPOCH = ("begin_epoch",)
-    AFTER_EPOCH = ("after_epoch",)
-    BEGIN_TRAINING = ("begin_training",)
-    AFTER_TRAINING = ("after_training",)
-    BEGIN_BATCH = ("begin_batch",)
-    AFTER_BATCH = ("after_batch",)
-    AFTER_CANCEL_ONE_BATCH = ("after_cancel_one_batch",)
-    AFTER_CANCEL_ALL_BATCH = ("after_cancel_all_batch",)
-    AFTER_PRED = ("after_pred",)
-    AFTER_LOSS = ("after_loss",)
-    AFTER_BACKWARD = ("after_backward",)
-    AFTER_STEP = ("after_step",)
-    AFTER_ZERO_GRAD = ("after_zero_grad",)
-    BEGIN_VALIDATE = ("begin_validate",)
-    AFTER_VALIDATE = ("after_validate",)
+    BEGIN_FIT = "begin_fit"
+    AFTER_FIT = "after_fit"
+    AFTER_CANCEL_FIT = "after_cancel_fit"
+    BEGIN_EPOCH = "begin_epoch"
+    AFTER_EPOCH = "after_epoch"
+    BEGIN_TRAINING = "begin_training"
+    AFTER_TRAINING = "after_training"
+    BEGIN_VALIDATE = "begin_validate"
+    AFTER_VALIDATE = "after_validate"
+    BEGIN_BATCH = "begin_batch"
+    AFTER_BATCH = "after_batch"
+    BEGIN_ALL_BATCH = "begin_all_batch"
+    AFTER_ALL_BATCH = "after_all_batch"
+    AFTER_CANCEL_ONE_BATCH = "after_cancel_one_batch"
+    AFTER_CANCEL_ALL_BATCH = "after_cancel_all_batch"
+    AFTER_PRED = "after_pred"
+    AFTER_LOSS = "after_loss"
+    AFTER_BACKWARD = "after_backward"
+    AFTER_STEP = "after_step"
+    AFTER_ZERO_GRAD = "after_zero_grad"
 
 
 class Callback:
-    """ 
+    """
     Base class for callbacks
 
     Possible values to be obtained from Learner:
-        
+
         Anytime:
         - model: nn.Module
         - data: DataBunch
@@ -44,14 +46,14 @@ class Callback:
         - Metrics: List
         - Callbacks: List
         - training: bool
-        
+
         BEGIN_TRAINING on:
         - loss: tensor (value only updated AFTER_LOSS)
 
         AFTER_PRED on:
         - pred: tensor
 
-        BEGIN_BATCH on:
+        BEGIN_ALL_BATCH on:
         - dl, xb, yb :DataLoader, DataSet, DataSet
         - epochs, epoch, iters, iter : int for all
     """
@@ -68,10 +70,13 @@ class Callback:
 
     @property
     def learner(self):
-        return self.learner
+        return self._learner
+
+    @learner.setter
+    def learner(self, value):
+        self._learner = value
 
     def __call__(self, cb_name):
         f = getattr(self, cb_name, None)
         if f is not None:
             f()
-
